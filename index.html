@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order quán bia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Unbounded:wght@600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --amber: #f7c948;
+      --amber-dark: #c27c1a;
+      --green: #0f3b1d;
+      --card: rgba(255, 255, 255, 0.92);
+      --ink: #0f172a;
+      --muted: #5b6473;
+      --stroke: rgba(255, 255, 255, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Manrope", "Helvetica Neue", sans-serif;
+      background: radial-gradient(circle at 15% 20%, rgba(247, 201, 72, 0.28), transparent 28%),
+                  radial-gradient(circle at 85% 10%, rgba(12, 63, 46, 0.35), transparent 30%),
+                  linear-gradient(135deg, #0b1320, #0f1f2f 48%, #15232d);
+      color: #e6e8ea;
+      padding: 28px 18px 48px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .container {
+      width: min(1180px, 100%);
+    }
+
+    .panel {
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 18px;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.26);
+      padding: 20px;
+      backdrop-filter: blur(6px);
+    }
+
+    .hero {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .hero-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .brand {
+      width: 120px;
+      height: 120px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid var(--stroke);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    .brand img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--amber);
+    }
+
+    h1 {
+      font-family: "Unbounded", "Manrope", sans-serif;
+      font-size: clamp(28px, 4vw, 38px);
+      margin: 0;
+      color: #f8fafc;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-gradient {
+      background: linear-gradient(110deg, #ffe27a 0%, #ffc94a 45%, #ffb11a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-shadow: 0 8px 22px rgba(0, 0, 0, 0.32), 0 0 0.5px rgba(0, 0, 0, 0.25);
+    }
+
+    .lead {
+      margin: 0;
+      color: #d6d9df;
+      line-height: 1.5;
+    }
+
+    form {
+      display: grid;
+      gap: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.9fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .main-column {
+      display: grid;
+      gap: 12px;
+    }
+
+    .side-column {
+      display: grid;
+      gap: 12px;
+      position: sticky;
+      top: 12px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid #d8dde5;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-family: "Manrope", sans-serif;
+      color: var(--ink);
+      background: #fff;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--amber-dark);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(194, 124, 26, 0.18);
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .split {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--ink);
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .muted-compact {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .locked-info {
+      display: none;
+      font-weight: 700;
+      color: var(--amber-dark);
+      margin-top: 6px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+    }
+
+    .item-card {
+      border: 1px solid #e1e5ec;
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+      display: grid;
+      gap: 8px;
+      min-height: 138px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.2s ease;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .item-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .item-card.selected {
+      border-color: rgba(247, 201, 72, 0.65);
+      box-shadow: 0 18px 44px rgba(247, 201, 72, 0.22);
+    }
+
+    .item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .item-figure {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      height: 140px;
+      background: #f5f5f7;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    .item-figure img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.25s ease;
+    }
+
+    .item-card:hover .item-figure img {
+      transform: scale(1.04);
+    }
+
+    .item-figure::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.0) 0%, rgba(0, 0, 0, 0.24) 100%);
+      pointer-events: none;
+    }
+
+    .item-chip {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+      backdrop-filter: blur(4px);
+    }
+
+    .qty-badge {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: #fff;
+      color: var(--ink);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .item-card.selected .qty-badge {
+      display: inline-flex;
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: rgba(247, 201, 72, 0.16);
+      color: #8a5b08;
+    }
+
+    .price {
+      font-weight: 700;
+      color: var(--amber-dark);
+      font-size: 15px;
+    }
+
+    .item-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .qty {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #e1e5ec;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f9fafb;
+    }
+
+    .qty button {
+      border: none;
+      background: transparent;
+      padding: 8px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--ink);
+      transition: background 0.2s ease;
+    }
+
+    .qty button:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .qty span {
+      padding: 0 12px;
+      font-weight: 700;
+    }
+
+    .add-btn {
+      background: var(--amber);
+      color: #1f2a3b;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 8px 16px rgba(247, 201, 72, 0.32);
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .add-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(247, 201, 72, 0.35);
+    }
+
+    .add-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 12px rgba(247, 201, 72, 0.28);
+    }
+
+    .card {
+      border: 1px solid #e1e5ec;
+      border-radius: 14px;
+      padding: 16px;
+      background: #fff;
+      display: grid;
+      gap: 12px;
+    }
+
+    .summary {
+      gap: 14px;
+    }
+
+    .summary-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed #e7ebf2;
+    }
+
+    .summary-row:last-child {
+      border-bottom: none;
+    }
+
+    .summary-name {
+      font-weight: 600;
+    }
+
+    .summary-meta {
+      color: var(--muted);
+      font-size: 14px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .total {
+      font-weight: 800;
+      color: var(--amber-dark);
+      font-size: 18px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(120deg, var(--amber), #f9a826);
+      color: #1a1f2c;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(249, 168, 38, 0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 34px rgba(249, 168, 38, 0.42);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.62;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .help {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .status {
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.success {
+      background: #e7f7ee;
+      color: #12622f;
+      border: 1px solid #9ed9b0;
+    }
+
+    .status.error {
+      background: #fdeeee;
+      color: #8f1d1d;
+      border: 1px solid #f6b4b4;
+    }
+
+    .status.warn {
+      background: #fff6e4;
+      color: #8c5a14;
+      border: 1px solid #f4d49d;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 3px solid rgba(0, 0, 0, 0.14);
+      border-top-color: #1a1f2c;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .bump {
+      animation: bump 0.28s ease;
+    }
+
+    @keyframes bump {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .select-locked {
+      background: #f5f7fb;
+      border-color: #d6dce8;
+      color: #4b5563;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 960px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .side-column {
+        position: static;
+        order: -1;
+      }
+      .hero-row {
+        grid-template-columns: 1fr;
+      }
+      .brand {
+        width: 96px;
+        height: 96px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 18px 14px 32px;
+      }
+      .panel {
+        padding: 18px;
+      }
+      .item-card {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="hero">
+      <div class="hero-row">
+        <div class="brand">
+          <img src="assets/Logo.jpg" alt="Pi Craft Beer">
+        </div>
+        <div>
+          <span class="eyebrow">Gọi món nhanh</span>
+          <h1><span class="brand-gradient">PI CRAFT BEER</span></h1>
+          <p class="lead">Khách quét QR tại bàn, chọn món ăn và nước uống, bấm Gửi order. Đơn sẽ được đẩy về nhà bếp.</p>
+        </div>
+      </div>
+    </header>
+
+    <form id="orderForm" class="panel">
+      <div class="form-grid">
+        <div class="main-column">
+          <section class="card">
+            <div class="section-title">
+              <h2>Thực đơn</h2>
+              <span class="muted">Nhấn + để thêm món</span>
+            </div>
+            <div id="menuList" class="menu-grid"></div>
+          </section>
+        </div>
+
+        <div class="side-column">
+          <section class="card">
+            <div class="section-title">
+              <h2>Thông tin bàn</h2>
+              <span class="muted">Tự điền từ mã QR</span>
+            </div>
+            <input type="hidden" id="tableValue" name="table">
+            <div class="muted">Bàn sẽ tự động điền qua mã QR trên bàn. Nếu không thấy số bàn, vui lòng quét lại mã đúng.</div>
+            <div id="tableLockedInfo" class="locked-info"></div>
+            <div class="split" style="margin-top:8px;">
+              <div>
+                <label for="note">Ghi chú (tùy chọn)</label>
+                <textarea id="note" name="note" placeholder="Ví dụ: ít đá, không hành tây, thêm xoài..."></textarea>
+              </div>
+            </div>
+          </section>
+          <section class="card summary">
+            <div class="section-title">
+              <h2>Đơn đã chọn</h2>
+              <span id="totalPrice" class="total">0 VND</span>
+            </div>
+            <div id="summaryList">Chưa có món nào.</div>
+          </section>
+
+          <button class="btn-primary" type="submit" id="submitBtn">Gửi order tới nhà bếp</button>
+          <p class="help">Cần thay const SCRIPT_URL trong file này bằng đường dẫn Web App của Google Apps Script để đơn lưu vào Google Sheets.</p>
+          <div id="statusBox" class="status" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    /*
+      Google Apps Script mẫu (File > New > Script):
+      const SHEET_ID = "YOUR_SHEET_ID";
+      function doPost(e) {
+        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName("Orders");
+        const data = JSON.parse(e.postData.contents);
+        const items = data.items.map(i => i.name + " x" + i.qty + " = " + i.subtotal).join(", ");
+        sheet.appendRow([new Date(), data.table, items, data.note, data.total]);
+        return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
+      }
+      Triển khai > Triển khai mới > Ứng dụng web, chọn "Me" và "Anyone". Sao chép URL dán vào SCRIPT_URL bên dưới.
+    */
+
+    const SCRIPT_URL = "YOUR_APP_SCRIPT_URL";
+
+    const menuItems = [
+      { id: "bia-tuoi", name: "Bia tươi", price: 25000, category: "Đồ uống", image: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=800&q=80" },
+      { id: "bia-chai", name: "Bia chai", price: 30000, category: "Đồ uống", image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80" },
+      { id: "bia-den", name: "Bia đen", price: 35000, category: "Đồ uống", image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80" },
+      { id: "nuoc-chanh", name: "Nước chanh", price: 20000, category: "Nước", image: "https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?auto=format&fit=crop&w=800&q=80" },
+      { id: "nuoc-soda", name: "Soda chanh", price: 22000, category: "Nước", image: "https://images.unsplash.com/photo-1527169402691-feff5539e52c?auto=format&fit=crop&w=800&q=80" },
+      { id: "khoai", name: "Khoai tây chiên", price: 45000, category: "Món ăn", image: "https://images.unsplash.com/photo-1585238341986-2d2dc84ebfd3?auto=format&fit=crop&w=800&q=80" },
+      { id: "suon-nuong", name: "Sườn nướng", price: 95000, category: "Món ăn", image: "https://images.unsplash.com/photo-1612874472278-5c1f9f7c8f3c?auto=format&fit=crop&w=800&q=80" },
+      { id: "cang-ghe", name: "Càng ghẹ rang muối", price: 120000, category: "Món ăn", image: "https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=800&q=80" },
+      { id: "bo-nuong", name: "Bò nướng mè", price: 110000, category: "Món ăn", image: "https://images.unsplash.com/photo-1517244683847-7456b63c5969?auto=format&fit=crop&w=800&q=80" },
+      { id: "hai-san", name: "Hải sản xào me", price: 135000, category: "Món ăn", image: "https://images.unsplash.com/photo-1604908813114-5c85941f3238?auto=format&fit=crop&w=800&q=80" }
+    ];
+
+    const order = new Map();
+    const menuList = document.getElementById("menuList");
+    const summaryList = document.getElementById("summaryList");
+    const totalPrice = document.getElementById("totalPrice");
+    const statusBox = document.getElementById("statusBox");
+    const submitBtn = document.getElementById("submitBtn");
+    const form = document.getElementById("orderForm");
+    const tableValue = document.getElementById("tableValue");
+    const tableLockedInfo = document.getElementById("tableLockedInfo");
+
+    function money(value) {
+      return value.toLocaleString("vi-VN") + " VND";
+    }
+
+    function bump(el) {
+      if (!el) return;
+      el.classList.remove("bump");
+      // Force reflow to restart animation
+      void el.offsetWidth;
+      el.classList.add("bump");
+    }
+
+    function renderMenu() {
+      menuList.innerHTML = "";
+      menuItems.forEach(item => {
+        const card = document.createElement("article");
+        card.className = "item-card";
+        card.id = `card-${item.id}`;
+        card.innerHTML = `
+          <div class="item-figure">
+            <img src="${item.image}" alt="${item.name}">
+            <span class="item-chip">${item.category}</span>
+            <span class="qty-badge" id="badge-${item.id}">0</span>
+          </div>
+          <div class="item-head">
+            <div>
+              <div class="summary-name">${item.name}</div>
+              <div class="muted">${item.category}</div>
+            </div>
+            <div class="price">${money(item.price)}</div>
+          </div>
+          <div class="item-actions">
+            <button type="button" class="add-btn" data-id="${item.id}">+ Thêm</button>
+            <div class="qty" aria-label="Số lượng ${item.name}">
+              <button type="button" data-step="-1" data-id="${item.id}">-</button>
+              <span id="qty-${item.id}">0</span>
+              <button type="button" data-step="1" data-id="${item.id}">+</button>
+            </div>
+          </div>
+        `;
+        menuList.appendChild(card);
+      });
+
+      menuList.addEventListener("click", handleMenuClick);
+    }
+
+    function handleMenuClick(event) {
+      const btn = event.target.closest("button[data-id]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-id");
+      const step = Number(btn.getAttribute("data-step") || 1);
+      updateQuantity(id, step);
+    }
+
+    function updateQuantity(id, delta) {
+      const item = menuItems.find(i => i.id === id);
+      if (!item) return;
+      const current = order.get(id) || { ...item, qty: 0 };
+      current.qty = Math.max(0, current.qty + delta);
+      if (current.qty === 0) {
+        order.delete(id);
+      } else {
+        order.set(id, current);
+      }
+      const qtyNode = document.getElementById(`qty-${id}`);
+      if (qtyNode) qtyNode.textContent = current.qty || 0;
+      const badgeNode = document.getElementById(`badge-${id}`);
+      if (badgeNode) {
+        badgeNode.textContent = current.qty || 0;
+        badgeNode.style.display = current.qty ? "inline-flex" : "none";
+      }
+      const cardNode = document.getElementById(`card-${id}`);
+      if (cardNode) {
+        cardNode.classList.toggle("selected", current.qty > 0);
+        bump(cardNode);
+      }
+      renderSummary();
+      bump(document.getElementById(`summary-${id}`));
+    }
+
+    function renderSummary() {
+      if (order.size === 0) {
+        summaryList.textContent = "Chưa có món nào.";
+        totalPrice.textContent = "0 VND";
+        return;
+      }
+
+      summaryList.innerHTML = "";
+      let total = 0;
+      order.forEach(item => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        const row = document.createElement("div");
+        row.className = "summary-row";
+        row.id = `summary-${item.id}`;
+        row.innerHTML = `
+          <div>
+            <div class="summary-name">${item.name}</div>
+            <div class="summary-meta">
+              <span>${money(item.price)} x ${item.qty}</span>
+            </div>
+          </div>
+          <div>
+            <div class="summary-meta" style="justify-content:flex-end; gap:6px;">
+              <button type="button" class="add-btn" style="padding:6px 10px; min-width:0; box-shadow:none; background:#eef1f6;" data-id="${item.id}" data-step="-1">-</button>
+              <span style="font-weight:700; min-width:24px; text-align:center;">${item.qty}</span>
+              <button type="button" class="add-btn" style="padding:6px 10px; min-width:0; box-shadow:none;" data-id="${item.id}" data-step="1">+</button>
+            </div>
+            <div class="price" style="text-align:right;">${money(subtotal)}</div>
+          </div>
+        `;
+        summaryList.appendChild(row);
+      });
+      totalPrice.textContent = money(total);
+    }
+
+    function setStatus(message, type = "success") {
+      statusBox.textContent = message;
+      statusBox.className = `status show ${type}`;
+    }
+
+    function applyTableFromQR() {
+      const params = new URLSearchParams(window.location.search);
+      const hashTable = window.location.hash ? window.location.hash.replace("#", "") : "";
+      const raw = params.get("table") || params.get("ban") || hashTable;
+      const num = raw ? Number(raw) : NaN;
+
+      if (!Number.isNaN(num) && num >= 1 && num <= 20 && tableValue) {
+        tableValue.value = String(num);
+        if (tableLockedInfo) {
+          tableLockedInfo.textContent = `Bàn ${num} (từ QR)`;
+          tableLockedInfo.style.display = "block";
+        }
+      }
+    }
+
+    async function submitOrder(event) {
+      event.preventDefault();
+      setStatus("", "success");
+
+      if (order.size === 0) {
+        setStatus("Vui lòng chọn ít nhất 1 món trước khi gửi.", "warn");
+        return;
+      }
+
+      const table = tableValue ? tableValue.value.trim() : "";
+      if (!table) {
+        setStatus("Không tìm thấy số bàn từ QR. Vui lòng quét đúng mã trên bàn.", "warn");
+        return;
+      }
+
+      if (SCRIPT_URL.includes("YOUR_APP_SCRIPT_URL")) {
+        setStatus("Chưa thay SCRIPT_URL bằng đường dẫn Web App của Google Apps Script.", "warn");
+        return;
+      }
+
+      const payload = {
+        table,
+        note: form.note.value.trim(),
+        items: Array.from(order.values()).map(i => ({
+          id: i.id,
+          name: i.name,
+          price: i.price,
+          qty: i.qty,
+          subtotal: i.price * i.qty
+        })),
+        total: Array.from(order.values()).reduce((sum, i) => sum + i.price * i.qty, 0),
+        createdAt: new Date().toISOString()
+      };
+
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.innerHTML = '<span class="spinner"></span>Đang gửi...';
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error("Network error");
+
+        await response.json().catch(() => ({}));
+        setStatus("Đã gửi đơn thành công! Nhà bếp đang xử lý.", "success");
+        order.clear();
+        menuItems.forEach(i => {
+          const qtyNode = document.getElementById(`qty-${i.id}`);
+          if (qtyNode) qtyNode.textContent = "0";
+          const badgeNode = document.getElementById(`badge-${i.id}`);
+          if (badgeNode) badgeNode.style.display = "none";
+          const cardNode = document.getElementById(`card-${i.id}`);
+          if (cardNode) cardNode.classList.remove("selected");
+        });
+        renderSummary();
+        form.note.value = "";
+      } catch (err) {
+        setStatus("Không thể gửi đơn. Kiểm tra mạng hoặc SCRIPT_URL.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    }
+
+    renderMenu();
+    summaryList.addEventListener("click", handleMenuClick);
+    renderSummary();
+    applyTableFromQR();
+    form.addEventListener("submit", submitOrder);
+  </script>
+</body>
+</html>

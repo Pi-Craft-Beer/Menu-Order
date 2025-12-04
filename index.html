@@ -616,9 +616,8 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxyR1APDtvqbieZru9aYmJ677UrrAZCXGyMrJzC1zVxURNu38GMtIR899TJhBOgaONE/exec";
-
-
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxyR1APDtvqbieZru9aYmJ677UrrAZCXGyMrJzC1zVxURNu38GMTIR899TJhBOgaONE/exec";
+  
     const menuItems = [
       { id: "bia-tuoi", name: "Bia tươi", price: 25000, category: "Đồ uống", image: "https://raw.githubusercontent.com/Pi-Craft-Beer/Pi-Craft-assets/refs/heads/main/IMG_0737%202.jpg" },
       { id: "bia-chai", name: "Bia chai", price: 30000, category: "Đồ uống", image: "https://raw.githubusercontent.com/Pi-Craft-Beer/Pi-Craft-assets/refs/heads/main/AFDB11AA-F16B-47BF-B792-C2880795992C.jpg" },
@@ -631,7 +630,7 @@
       { id: "bo-nuong", name: "Bò nướng mè", price: 110000, category: "Món ăn", image: "https://images.unsplash.com/photo-1517244683847-7456b63c5969?auto=format&fit=crop&w=800&q=80" },
       { id: "hai-san", name: "Hải sản xào me", price: 135000, category: "Món ăn", image: "https://images.unsplash.com/photo-1604908813114-5c85941f3238?auto=format&fit=crop&w=800&q=80" }
     ];
-
+  
     const order = new Map();
     const menuList = document.getElementById("menuList");
     const summaryList = document.getElementById("summaryList");
@@ -642,19 +641,18 @@
     const tableValue = document.getElementById("tableValue");
     const tableLockedInfo = document.getElementById("tableLockedInfo");
     let tableFromParams = "";
-
+  
     function money(value) {
       return value.toLocaleString("vi-VN") + " VND";
     }
-
+  
     function bump(el) {
       if (!el) return;
       el.classList.remove("bump");
-      // Force reflow to restart animation
       void el.offsetWidth;
       el.classList.add("bump");
     }
-
+  
     function renderMenu() {
       menuList.innerHTML = "";
       menuItems.forEach(item => {
@@ -685,10 +683,10 @@
         `;
         menuList.appendChild(card);
       });
-
+  
       menuList.addEventListener("click", handleMenuClick);
     }
-
+  
     function handleMenuClick(event) {
       const btn = event.target.closest("button[data-id]");
       if (!btn) return;
@@ -696,7 +694,7 @@
       const step = Number(btn.getAttribute("data-step") || 1);
       updateQuantity(id, step);
     }
-
+  
     function updateQuantity(id, delta) {
       const item = menuItems.find(i => i.id === id);
       if (!item) return;
@@ -722,14 +720,14 @@
       renderSummary();
       bump(document.getElementById(`summary-${id}`));
     }
-
+  
     function renderSummary() {
       if (order.size === 0) {
         summaryList.textContent = "Chưa có món nào.";
         totalPrice.textContent = "0 VND";
         return;
       }
-
+  
       summaryList.innerHTML = "";
       let total = 0;
       order.forEach(item => {
@@ -758,28 +756,26 @@
       });
       totalPrice.textContent = money(total);
     }
-
+  
     function setStatus(message, type = "success") {
       statusBox.textContent = message;
       statusBox.className = `status show ${type}`;
     }
-
+  
     function parseTable(raw) {
       if (!raw) return "";
       const cleaned = String(raw).trim();
-      // Ưu tiên chuỗi chỉ toàn số
       if (/^\d{1,3}$/.test(cleaned)) {
         const num = Number(cleaned);
         return num >= 1 && num <= 200 ? String(num) : "";
       }
-      // Thử tách số trong chuỗi có ký tự khác
       const match = cleaned.match(/(\d{1,3})/);
       if (!match) return "";
       const num = Number(match[1]);
       return num >= 1 && num <= 200 ? String(num) : "";
     }
-
-    function applyTableValue(val, source = "" ) {
+  
+    function applyTableValue(val, source = "") {
       if (!val) return;
       tableFromParams = val;
       if (tableValue) tableValue.value = val;
@@ -788,7 +784,7 @@
         tableLockedInfo.style.display = "block";
       }
     }
-
+  
     function applyTableFromQR() {
       const params = new URLSearchParams(window.location.search);
       const hashTable = window.location.hash ? window.location.hash.replace("#", "") : "";
@@ -805,7 +801,7 @@
         tableLockedInfo.style.display = "block";
       }
     }
-
+  
     function applyTableFromAppsScript() {
       if (!(window.google && google.script && google.script.url)) return;
       google.script.url.getLocation(loc => {
@@ -815,22 +811,22 @@
         if (parsed) applyTableValue(parsed);
       });
     }
-
+  
     async function submitOrder(event) {
       event.preventDefault();
       setStatus("", "success");
-
+  
       if (order.size === 0) {
         setStatus("Vui lòng chọn ít nhất 1 món trước khi gửi.", "warn");
         return;
       }
-
+  
       const table = tableValue ? (tableValue.value.trim() || tableFromParams) : tableFromParams;
       if (!table) {
         setStatus(`Không tìm thấy số bàn từ URL/QR. Kiểm tra lại mã (ví dụ ?table=1). URL hiện tại: ${window.location.href}`, "warn");
         return;
       }
-
+  
       const payload = {
         table,
         note: form.note.value.trim(),
@@ -846,11 +842,11 @@
         total: Array.from(order.values()).reduce((sum, i) => sum + i.price * i.qty, 0),
         createdAt: new Date().toISOString()
       };
-
+  
       submitBtn.disabled = true;
       const originalText = submitBtn.textContent;
       submitBtn.innerHTML = '<span class="spinner"></span>Đang gửi...';
-
+  
       try {
         await sendOrder(payload);
         setStatus("Đã gửi đơn thành công! Nhà bếp đang xử lý.", "success");
@@ -866,15 +862,16 @@
         renderSummary();
         form.note.value = "";
       } catch (err) {
+        console.error(err);
         setStatus("Không thể gửi đơn. Kiểm tra mạng hoặc SCRIPT_URL.", "error");
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
       }
     }
-
+  
     function sendOrder(payload) {
-      // Khi chạy trong Apps Script HTML Service, dùng google.script.run để tránh CORS
+      // Nếu chạy bên trong HTML Service của Apps Script thì dùng google.script.run
       if (window.google && google.script && google.script.run) {
         return new Promise((resolve, reject) => {
           google.script.run
@@ -883,17 +880,20 @@
             .processOrder(payload);
         });
       }
-      // Fallback fetch (nếu host tĩnh)
+  
+      // Fallback khi host tĩnh (Netlify, v.v.) -> dùng simple request để tránh preflight CORS
       return fetch(SCRIPT_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        // DÙNG text/plain (simple request) để browser KHÔNG gửi preflight OPTIONS
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
       }).then(res => {
         if (!res.ok) throw new Error("Network error");
-        return res.json().catch(() => ({}));
+        // Không cần đọc JSON, chỉ cần biết gửi thành công
+        return;
       });
     }
-
+  
     renderMenu();
     summaryList.addEventListener("click", handleMenuClick);
     renderSummary();
@@ -901,5 +901,6 @@
     applyTableFromAppsScript();
     form.addEventListener("submit", submitOrder);
   </script>
+  
 </body>
 </html>

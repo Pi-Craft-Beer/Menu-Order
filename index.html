@@ -561,7 +561,7 @@
     <header class="hero">
       <div class="hero-row">
         <div class="brand">
-          <img src="assets/Logo.jpg" alt="Pi Craft Beer">
+          <img src="https://raw.githubusercontent.com/Pi-Craft-Beer/Pi-Craft-assets/refs/heads/main/Logo.jpg" alt="Pi Craft Beer"/>
         </div>
         <div>
           <span class="eyebrow">Gọi món nhanh</span>
@@ -590,7 +590,7 @@
               <span class="muted">Tự điền từ mã QR</span>
             </div>
             <input type="hidden" id="tableValue" name="table">
-            <div class="muted">Bàn sẽ tự động điền qua mã QR trên bàn. Nếu không thấy số bàn, vui lòng quét lại mã đúng.</div>
+            <div class="muted">Bàn sẽ tự động hiển thị thông qua mã QR trên bàn. Nếu không thấy số bàn, vui lòng quét lại mã đúng.</div>
             <div id="tableLockedInfo" class="locked-info"></div>
             <div class="split" style="margin-top:8px;">
               <div>
@@ -608,36 +608,24 @@
           </section>
 
           <button class="btn-primary" type="submit" id="submitBtn">Gửi order tới nhà bếp</button>
-          <p class="help">Cần thay const SCRIPT_URL trong file này bằng đường dẫn Web App của Google Apps Script để đơn lưu vào Google Sheets.</p>
-          <div id="statusBox" class="status" role="status" aria-live="polite"></div>
+      <p class="help"></p>
+      <div id="statusBox" class="status" role="status" aria-live="polite"></div>
         </div>
       </div>
     </form>
   </div>
 
   <script>
-    /*
-      Google Apps Script mẫu (File > New > Script):
-      const SHEET_ID = "YOUR_SHEET_ID";
-      function doPost(e) {
-        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName("Orders");
-        const data = JSON.parse(e.postData.contents);
-        const items = data.items.map(i => i.name + " x" + i.qty + " = " + i.subtotal).join(", ");
-        sheet.appendRow([new Date(), data.table, items, data.note, data.total]);
-        return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
-      }
-      Triển khai > Triển khai mới > Ứng dụng web, chọn "Me" và "Anyone". Sao chép URL dán vào SCRIPT_URL bên dưới.
-    */
-
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxyR1APDtvqbieZru9aYmJ677UrrAZCXGyMrJzC1zVxURNu38GMtIR899TJhBOgaONE/exec";
 
+
     const menuItems = [
-      { id: "bia-tuoi", name: "Bia tươi", price: 25000, category: "Đồ uống", image: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=800&q=80" },
-      { id: "bia-chai", name: "Bia chai", price: 30000, category: "Đồ uống", image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80" },
+      { id: "bia-tuoi", name: "Bia tươi", price: 25000, category: "Đồ uống", image: "https://raw.githubusercontent.com/Pi-Craft-Beer/Pi-Craft-assets/refs/heads/main/IMG_0737%202.jpg" },
+      { id: "bia-chai", name: "Bia chai", price: 30000, category: "Đồ uống", image: "https://raw.githubusercontent.com/Pi-Craft-Beer/Pi-Craft-assets/refs/heads/main/AFDB11AA-F16B-47BF-B792-C2880795992C.jpg" },
       { id: "bia-den", name: "Bia đen", price: 35000, category: "Đồ uống", image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80" },
       { id: "nuoc-chanh", name: "Nước chanh", price: 20000, category: "Nước", image: "https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?auto=format&fit=crop&w=800&q=80" },
       { id: "nuoc-soda", name: "Soda chanh", price: 22000, category: "Nước", image: "https://images.unsplash.com/photo-1527169402691-feff5539e52c?auto=format&fit=crop&w=800&q=80" },
-      { id: "khoai", name: "Khoai tây chiên", price: 45000, category: "Món ăn", image: "https://images.unsplash.com/photo-1585238341986-2d2dc84ebfd3?auto=format&fit=crop&w=800&q=80" },
+      { id: "khoai", name: "Khoai tây chiên", price: 45000, category: "Món ăn", image: "https://raw.githubusercontent.com/Pi-Craft-Beer/Pi-Craft-assets/refs/heads/main/IMG_1197.jpg" },
       { id: "suon-nuong", name: "Sườn nướng", price: 95000, category: "Món ăn", image: "https://images.unsplash.com/photo-1612874472278-5c1f9f7c8f3c?auto=format&fit=crop&w=800&q=80" },
       { id: "cang-ghe", name: "Càng ghẹ rang muối", price: 120000, category: "Món ăn", image: "https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=800&q=80" },
       { id: "bo-nuong", name: "Bò nướng mè", price: 110000, category: "Món ăn", image: "https://images.unsplash.com/photo-1517244683847-7456b63c5969?auto=format&fit=crop&w=800&q=80" },
@@ -653,6 +641,7 @@
     const form = document.getElementById("orderForm");
     const tableValue = document.getElementById("tableValue");
     const tableLockedInfo = document.getElementById("tableLockedInfo");
+    let tableFromParams = "";
 
     function money(value) {
       return value.toLocaleString("vi-VN") + " VND";
@@ -775,19 +764,56 @@
       statusBox.className = `status show ${type}`;
     }
 
+    function parseTable(raw) {
+      if (!raw) return "";
+      const cleaned = String(raw).trim();
+      // Ưu tiên chuỗi chỉ toàn số
+      if (/^\d{1,3}$/.test(cleaned)) {
+        const num = Number(cleaned);
+        return num >= 1 && num <= 200 ? String(num) : "";
+      }
+      // Thử tách số trong chuỗi có ký tự khác
+      const match = cleaned.match(/(\d{1,3})/);
+      if (!match) return "";
+      const num = Number(match[1]);
+      return num >= 1 && num <= 200 ? String(num) : "";
+    }
+
+    function applyTableValue(val, source = "" ) {
+      if (!val) return;
+      tableFromParams = val;
+      if (tableValue) tableValue.value = val;
+      if (tableLockedInfo) {
+        tableLockedInfo.textContent = `Bàn ${val}`;
+        tableLockedInfo.style.display = "block";
+      }
+    }
+
     function applyTableFromQR() {
       const params = new URLSearchParams(window.location.search);
       const hashTable = window.location.hash ? window.location.hash.replace("#", "") : "";
-      const raw = params.get("table") || params.get("ban") || hashTable;
-      const num = raw ? Number(raw) : NaN;
-
-      if (!Number.isNaN(num) && num >= 1 && num <= 20 && tableValue) {
-        tableValue.value = String(num);
-        if (tableLockedInfo) {
-          tableLockedInfo.textContent = `Bàn ${num} (từ QR)`;
-          tableLockedInfo.style.display = "block";
-        }
+      const paramTable = params.get("table");
+      const paramBan = params.get("ban");
+      const raw = paramTable || paramBan || hashTable;
+      const parsed = parseTable(raw);
+      if (parsed) {
+        applyTableValue(parsed);
+        return;
       }
+      if (tableLockedInfo) {
+        tableLockedInfo.textContent = "Không tìm thấy số bàn trong URL. Vui lòng quét lại mã đúng (ví dụ ?table=1).";
+        tableLockedInfo.style.display = "block";
+      }
+    }
+
+    function applyTableFromAppsScript() {
+      if (!(window.google && google.script && google.script.url)) return;
+      google.script.url.getLocation(loc => {
+        const raw = (loc.parameter && (loc.parameter.table || loc.parameter.ban)) ||
+                    (loc.hash ? loc.hash.replace(/^#/, "") : "");
+        const parsed = parseTable(raw);
+        if (parsed) applyTableValue(parsed);
+      });
     }
 
     async function submitOrder(event) {
@@ -799,14 +825,9 @@
         return;
       }
 
-      const table = tableValue ? tableValue.value.trim() : "";
+      const table = tableValue ? (tableValue.value.trim() || tableFromParams) : tableFromParams;
       if (!table) {
-        setStatus("Không tìm thấy số bàn từ QR. Vui lòng quét đúng mã trên bàn.", "warn");
-        return;
-      }
-
-      if (SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbxyR1APDtvqbieZru9aYmJ677UrrAZCXGyMrJzC1zVxURNu38GMtIR899TJhBOgaONE/exec")) {
-        setStatus("Chưa thay SCRIPT_URL bằng đường dẫn Web App của Google Apps Script.", "warn");
+        setStatus(`Không tìm thấy số bàn từ URL/QR. Kiểm tra lại mã (ví dụ ?table=1). URL hiện tại: ${window.location.href}`, "warn");
         return;
       }
 
@@ -816,8 +837,10 @@
         items: Array.from(order.values()).map(i => ({
           id: i.id,
           name: i.name,
+          category: i.category,
           price: i.price,
           qty: i.qty,
+          unit: "phần",
           subtotal: i.price * i.qty
         })),
         total: Array.from(order.values()).reduce((sum, i) => sum + i.price * i.qty, 0),
@@ -829,15 +852,7 @@
       submitBtn.innerHTML = '<span class="spinner"></span>Đang gửi...';
 
       try {
-        const response = await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) throw new Error("Network error");
-
-        await response.json().catch(() => ({}));
+        await sendOrder(payload);
         setStatus("Đã gửi đơn thành công! Nhà bếp đang xử lý.", "success");
         order.clear();
         menuItems.forEach(i => {
@@ -858,10 +873,32 @@
       }
     }
 
+    function sendOrder(payload) {
+      // Khi chạy trong Apps Script HTML Service, dùng google.script.run để tránh CORS
+      if (window.google && google.script && google.script.run) {
+        return new Promise((resolve, reject) => {
+          google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(err => reject(new Error(err && err.message ? err.message : "Script error")))
+            .processOrder(payload);
+        });
+      }
+      // Fallback fetch (nếu host tĩnh)
+      return fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(res => {
+        if (!res.ok) throw new Error("Network error");
+        return res.json().catch(() => ({}));
+      });
+    }
+
     renderMenu();
     summaryList.addEventListener("click", handleMenuClick);
     renderSummary();
     applyTableFromQR();
+    applyTableFromAppsScript();
     form.addEventListener("submit", submitOrder);
   </script>
 </body>

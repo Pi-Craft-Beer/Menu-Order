@@ -5,6 +5,7 @@ const STATUS_COL = 11; // cột K
 const STT_COL = 1; // cột A
 const TS_COL = 3; // cột C
 const TOTAL_COL = 9; // cột I (Thành tiền)
+const CORS_ALLOW_ORIGIN = "*";
 
 function getSheet() {
   const ss = SpreadsheetApp.openById(SHEET_ID);
@@ -28,23 +29,29 @@ function getSheet() {
   return sheet;
 }
 
+function jsonResponse(body) {
+  return ContentService.createTextOutput(JSON.stringify(body))
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeader("Access-Control-Allow-Origin", CORS_ALLOW_ORIGIN)
+    .setHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS")
+    .setHeader("Access-Control-Allow-Headers", "Content-Type");
+}
+
 function doPost(e) {
   try {
     if (!e || !e.postData) throw new Error("No postData");
     const data = JSON.parse(e.postData.contents);
     writeRows(data);
 
-    return ContentService.createTextOutput(JSON.stringify({ ok: true }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ ok: true });
   } catch (err) {
     Logger.log(err);
-    return ContentService.createTextOutput(JSON.stringify({ ok: false, error: String(err) }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ ok: false, error: String(err) });
   }
 }
 
 function doGet() {
-  return HtmlService.createHtmlOutputFromFile("MenuPortal").setTitle("Pi Craft Beer");
+  return jsonResponse({ ok: true, message: "Pi Craft Beer order API is up" });
 }
 
 // Cho phép gọi trực tiếp từ client bằng google.script.run.processOrder(payload)
